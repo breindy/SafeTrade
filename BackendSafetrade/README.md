@@ -1,5 +1,6 @@
 # Backend Starting instruction
 > Built from [here](https://github.com/CUNYTechPrep/backend-starter)  
+
 $ npm install  
 $ npm install bcrypt-nodejs passport passport-local cookie-parser express-session  
 $ npm run  
@@ -11,6 +12,7 @@ $ npm run
 
 ## Running PostgreSQL
 > If not running already  
+
 To run  $ brew services start postgresql  
 To stop $ brew services stop postgresql  
 
