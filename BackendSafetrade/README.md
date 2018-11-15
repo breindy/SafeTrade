@@ -3,7 +3,7 @@
 
 $ npm install  
 $ npm install bcrypt-nodejs passport passport-local cookie-parser express-session  
-$ npm services start postgres
+$ npm services start postgres  
 $ npm run  
 
 ## Explanations
