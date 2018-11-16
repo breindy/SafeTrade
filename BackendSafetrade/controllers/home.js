@@ -4,9 +4,9 @@ const models = require('../models');
 const router = express.Router();
 
 
-router.get('/apple/price', (req, res) => {
+router.get('/', (req, res) => {
   res.json({
-    msg: "300"
+    msg: "Successfully hit the root!"
   });
 });
 
