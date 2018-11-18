@@ -1,9 +1,9 @@
 # SafeTrade
-> SafeTrade aims to automate tips/hints production for investors to invest safe without doing manual analysis. This is an attempt to predict on stock prices by doing analysis on market data using some machine learning tools and principles  
+> SafeTrade aims to automate tips/hints production for investors to invest safe without doing manual analysis. This is an attempt to predict on stock prices by doing analysis on market data using machine learning tools and principles.
 
 ### Project Structure
 
-- `FrontendSafetrade`
+- `FrontendSafeTrade`
     + @Michelle: add some description here, please!
 
 - `BackendSafeTrade`
