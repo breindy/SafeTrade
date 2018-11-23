@@ -18,4 +18,4 @@ To run $ brew services start postgresql
 To stop $ brew services stop postgresql  
 
 ## Use Cases:
-    + 'baseURL/stock?ticker=tickerSymbol' will return the current stock price of a single company. Stock price of the tickerSymbol company will be returned. For example, baseURL/stock?ticker=AAPL will return Apple Inc.'s price in a format like {"price":"176.78"}  
+- 'baseURL/stock?ticker=tickerSymbol' will return the current stock price of a single company. Stock price of the tickerSymbol company will be returned. For example, baseURL/stock?ticker=AAPL will return Apple Inc.'s price in a format like {"price":"176.78"}  
