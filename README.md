@@ -1,14 +1,14 @@
-## SafeTrade
+# SafeTrade
+> SafeTrade aims to automate tips/hints production for investors to invest safe without doing manual analysis. This is an attempt to predict on stock prices by doing analysis on market data using machine learning tools and principles.
 
-### Team Members
+### Project Structure
 
-1. [Shofiqur Rahman](https://www.github.com/shofi384)
-2. [Michelle Uy](https://www.github.com/shofi384)
-3. [Bashir Ahamed](https://www.github.com/ahamedbashir)
-4. [Thierno Diallo](https://www.github.com/)
+- `FrontendSafeTrade`
+    + @Michelle: add some description here, please!
 
-### Description
+- `BackendSafeTrade`
+    + This is a RESTFUL server. The frontend makes api calls to BackendSafeTrade to get data. BackendSafeTrade in turn collects and customize required data by making api calls to IEX as well as to local PostgreSQL server.
 
-This is a group project for Fall 2018 Intro to Data Science course at The City College of New York with Professor Grant Long.
+- `PredictionModel`
+    + This is where the model for stock prediction is developed. Initially, we are using python to extract and clean data as well as train model on that data. We stil have to integrate this part to the backend. 
 
-SafeTrade will be a smart investment platform for safe stock trading. SafeTrade will allow buying of only those stocks that are above a threshold value/rating. Depending on the threshold value, every stock will be given a rating. Rating will also determine the next appropriate action for this stock buy/sell.

@@ -20,7 +20,12 @@
     "express": "^4.16.1",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
+<<<<<<< HEAD
     "nodemon": "^1.18.6",
+=======
+    "node-fetch": "^2.0",
+    "nodemon": "^1.18.5",
+>>>>>>> 5db6258f9f2628e96228db3f6eaec3fa05c8b59a
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.3.0",

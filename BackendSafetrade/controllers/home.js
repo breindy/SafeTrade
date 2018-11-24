@@ -5,6 +5,12 @@ const router = express.Router();
 
 
 
+router.get('/', (req, res) => {
+  res.json({
+    msg: "Successfully hit the root!"
+  });
+});
+
 
 router.post('/', (req, res) => {
   res.json({
