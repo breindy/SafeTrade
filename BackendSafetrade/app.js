@@ -1,6 +1,7 @@
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const passport = require('./middlewares/auth');
+const cookieSession = require('cookie-session');
 
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -33,6 +34,10 @@ app.set('views', `${__dirname}/views/`);
 */
 
 app.use(cookieParser());
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: ['keyboard_cat_michelle']
+}));
 
 app.use(expressSession(({
   secret: 'keyboard cat - REPLACE ME WITH A BETTER SECRET',
@@ -47,7 +52,10 @@ app.use(passport.session());
 
 // Load up all of the controllers
 const controllers = require('./controllers');
-app.use(controllers)
+const dashboard = require('./controllers/dashboard');
+app.use('/api',controllers)
+app.use('/dashboard',dashboard)
+
 
 
 // First, make sure the Database tables and models are in sync

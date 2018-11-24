@@ -5,7 +5,7 @@ const passport = require('../middlewares/auth');
 const router = express.Router();
 const User = models.User;
 
-router.get('/error', (req, res) => {
+router.get('/error', (req, res, next) => {
   res.sendStatus(401);
 })
 
@@ -25,14 +25,20 @@ router.post('/signup', (req,res) => {
 
 
 router.post('/login',
-  passport.authenticate('local', { failureRedirect: '/auth/error' }),
+  passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/auth/error' }),
   (req, res) => {
-    res.json({
-      id: req.user.id,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      email: req.user.email,
-    });
+    // res.redirect('/dashboard');
+
+    // res.json({
+    //   id: req.user.id,
+    //   firstName: req.user.firstName,
+    //   lastName: req.user.lastName,
+    //   email: req.user.email,
+
+    //   message: '✅ Login Successful with the Correct Credentials!'
+    // });
   });
 
 
@@ -42,11 +48,12 @@ router.get('/logout', (req, res) => {
 });
 
 
-router.get('/profile',
+router.get('/auth/profile',
   passport.redirectIfNotLoggedIn('/auth/error'),
   (req, res) => {
-    res.json({ msg: "This is the profile page for: "+req.user.email });
+    res.json({ msg: "This is the profile page for: " + req.user.email });
 });
+
 
 
 module.exports = router;
