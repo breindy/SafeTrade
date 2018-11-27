@@ -1,16 +1,93 @@
-# Import necessary python modules to equip ourselves with better tools
+'''
+Before running this script to aggregate all stock data into StockData.csv, 
+it is strongly recommended that NasdaqIndices.csv be updated from here: 
+https://finance.yahoo.com/quote/%5EIXIC/history?ltr=1
+'''
+
+### Import necessary python modules to equip ourselves with magnificant tools
+
+# To work with JSON objects returned from http calls
+import json
 # Import library for data manipulation
 import pandas as pd
 # Import pyhton http library
 import requests
-# To work with JSON objects returned from http calls
-import json
 
-# Declaring the main dataframe that we will be manipulating throughout the model building process 
+
+# All API calls to IEX is prefixed with this base URL
+iexUrl = 'https://api.iextrading.com/1.0'
+
+
+### Declaring the main dataframe that we will be manipulating throughout the model building process 
 df = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
 
 
-### Populating df with data for Apple Inc.
+# Fetching all valid ticker symbols to populate the dataframe for each symbol with a year round transactions
+allCompanies = requests.get(iexUrl + '/ref-data/symbols').json()
+
+
+### Populating the dataframe with stock data of one year for each company
+for company in allCompanies:
+	## if the symbol is enabled for trading on IEX
+	if company['isEnabled']:
+		## Declaring symbolDF to hold data for this symbol only
+		symbolDF = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
+
+		# To flag if the company has all the necessary features the model is looking for
+		status = True
+
+		symbol = company['symbol']
+		name = company['name']
+		
+		## Making API call to get last one year end of day close price(target value) and transaction date for each symbol
+		response = requests.get(iexUrl + '/stock/' + symbol + '/chart/1y')
+		JSONdata = response.json()
+
+		# Declare a list to hold each transaction date
+		date = list()
+		# Declare a list to hold each transaction price
+		price = list()
+
+		# Populate the placeholders date and price and then add them to the symbolDF
+		for data in JSONdata:
+			date.append(data['date'])
+			price.append(data['close'])
+		symbolDF.date = date
+		symbolDF.price = price
+		symbolDF.company = name
+		symbolDF.symbol = symbol
+
+		## Making API call to get last one year querterly EPS for each symbol
+		response = requests.get(iexUrl + '/stock/' + symbol + '/earnings')
+		JSONdata = response.json()
+
+		# Accumalate all EPS to set the null values to average EPS for the year
+		totalEPS = 0
+
+		# Setting EPS values for transaction days that happened after the EPS reporting date
+		if 'earnings' in JSONdata:
+			for data in JSONdata['earnings']:
+				if data['actualEPS'] is None:
+					data['actualEPS'] = 0
+				symbolDF.loc[symbolDF['date'] > data['EPSReportDate'], ['eps']] = data['actualEPS']
+				totalEPS += data['actualEPS']
+
+			# Setting NaN values in EPS to avarage of last four EPS
+			symbolDF.loc[pd.isnull(symbolDF['eps']), ['eps']] = totalEPS / len(JSONdata['earnings'])
+		else:
+			status = False
+
+
+		# Concatenating the symbolDF to the main dataframe df
+		if status:
+			df = pd.concat([df, symbolDF], ignore_index=True, sort=False)
+
+
+
+
+
+
+
 tempdf = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'marketcap', 'pe', 'price', 'revenuePerShare'])
 
 # Making API call to get last one year end of day close price(target value) and transaction date for AAPL
@@ -76,9 +153,8 @@ for data in JSONdata['financials']:
 # Setting NaN values in grossProfit to avarage of last four grossProfit
 tempdf.loc[pd.isnull(tempdf['grossProfit']), ['grossProfit']] = totalgrossProfit / len(JSONdata['financials'])
 
-# Concatenating Apple dataframe to the main dataframe df
-df = pd.concat([df, tempdf], ignore_index=True)
 
 
-### Save all stock data in a CSV file called 'StockData.csv'
+### Save all stocks data in a CSV file called 'StockData.csv'
 df.to_csv('StockData.csv')
+print('All data written to StockData.csv successfully )-:')
