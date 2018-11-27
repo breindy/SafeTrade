@@ -1,6 +1,6 @@
 '''
-Before running this script to aggregate all stock data into StockData.csv, 
-it is strongly recommended that NasdaqIndices.csv be updated from here: 
+Before running this script to aggregate all stock data into StockData.csv file,
+it is strongly recommended that NasdaqIndices.csv be updated from here:
 https://finance.yahoo.com/quote/%5EIXIC/history?ltr=1
 '''
 
@@ -10,6 +10,8 @@ https://finance.yahoo.com/quote/%5EIXIC/history?ltr=1
 import json
 # Import library for data manipulation
 import pandas as pd
+# For helping with sophistacated calculations
+import numpy as np
 # Import pyhton http library
 import requests
 
@@ -17,8 +19,7 @@ import requests
 # All API calls to IEX is prefixed with this base URL
 iexUrl = 'https://api.iextrading.com/1.0'
 
-
-### Declaring the main dataframe that we will be manipulating throughout the model building process 
+### Declaring the main dataframe that we will be manipulating throughout the model building process
 df = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
 
 
@@ -28,62 +29,86 @@ allCompanies = requests.get(iexUrl + '/ref-data/symbols').json()
 
 ### Populating the dataframe with stock data of one year for each company
 for company in allCompanies:
-	## if the symbol is enabled for trading on IEX
-	if company['isEnabled']:
-		## Declaring symbolDF to hold data for this symbol only
-		symbolDF = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
+    ## if the symbol is enabled for trading on IEX
+    if company['isEnabled']:
+        ## Declaring symbolDF to hold data for this symbol only
+        symbolDF = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
 
-		# To flag if the company has all the necessary features the model is looking for
-		status = True
+        # To flag if the company has all the necessary features the model is looking for
+        status = True
 
-		symbol = company['symbol']
-		name = company['name']
-		
-		## Making API call to get last one year end of day close price(target value) and transaction date for each symbol
-		response = requests.get(iexUrl + '/stock/' + symbol + '/chart/1y')
-		JSONdata = response.json()
+        symbol = company['symbol']
+        name = company['name']
 
-		# Declare a list to hold each transaction date
-		date = list()
-		# Declare a list to hold each transaction price
-		price = list()
+        ## Making API call to get last one year end of day close price(target value) and transaction date for each symbol
+        response = requests.get(iexUrl + '/stock/' + symbol + '/chart/1y')
+        JSONdata = response.json()
 
-		# Populate the placeholders date and price and then add them to the symbolDF
-		for data in JSONdata:
-			date.append(data['date'])
-			price.append(data['close'])
-		symbolDF.date = date
-		symbolDF.price = price
-		symbolDF.company = name
-		symbolDF.symbol = symbol
+        # Declare a list to hold each transaction date
+        date = list()
+        # Declare a list to hold each transaction price
+        price = list()
 
-		## Making API call to get last one year querterly EPS for each symbol
-		response = requests.get(iexUrl + '/stock/' + symbol + '/earnings')
-		JSONdata = response.json()
-
-		# Accumalate all EPS to set the null values to average EPS for the year
-		totalEPS = 0
-
-		# Setting EPS values for transaction days that happened after the EPS reporting date
-		if 'earnings' in JSONdata:
-			for data in JSONdata['earnings']:
-				if data['actualEPS'] is None:
-					data['actualEPS'] = 0
-				symbolDF.loc[symbolDF['date'] > data['EPSReportDate'], ['eps']] = data['actualEPS']
-				totalEPS += data['actualEPS']
-
-			# Setting NaN values in EPS to avarage of last four EPS
-			symbolDF.loc[pd.isnull(symbolDF['eps']), ['eps']] = totalEPS / len(JSONdata['earnings'])
-		else:
-			status = False
+        # Populate the placeholders date and price and then add them to the symbolDF
+        for data in JSONdata:
+            date.append(data['date'])
+            price.append(data['close'])
+        symbolDF.date = date
+        symbolDF.price = price
+        symbolDF.company = name
+        symbolDF.symbol = symbol
 
 
-		# Concatenating the symbolDF to the main dataframe df
-		if status:
-			df = pd.concat([df, symbolDF], ignore_index=True, sort=False)
+        ## Making API call to get last one year querterly EPS for each symbol
+        response = requests.get(iexUrl + '/stock/' + symbol + '/earnings')
+        JSONdata = response.json()
+
+        # Accumalate all EPS to set the null values to average EPS for the year
+        totalEPS = 0
+
+        # Making sure if the fetched data have a component 'earnings' otherwise status is set to False
+        if 'earnings' in JSONdata:
+            for data in JSONdata['earnings']:
+                if data['actualEPS'] is None:
+                    # If actualEPS is not there
+                    data['actualEPS'] = 0
+                # Setting EPS values for transaction days that happened after the EPS reporting date
+                symbolDF.loc[symbolDF['date'] > data['EPSReportDate'], ['eps']] = data['actualEPS']
+                totalEPS += data['actualEPS']
+
+            # Setting NaN values in EPS to avarage of last four EPS
+            symbolDF.loc[pd.isnull(symbolDF['eps']), ['eps']] = totalEPS / len(JSONdata['earnings'])
+        else:
+            status = False
+
+
+        ## Assigning pe values
+        # For eps values==0, dividing price with a very small number close to zero
+        if status:
+            symbolDF['pe'] = symbolDF['price'].div(symbolDF['eps'] != 0, np.nextafter(0,1))
+
+        print(symbolDF.head(2))
+'''
+        ## Making API call to get last one year querterly dividends
+        response = requests.get(iexUrl + '/stock/' + symbol + '/dividends/1y')
+        JSONdata = response.json()
+        totalDividend = 0 # to set the null dividend later
+
+# Setting dividend values for transaction days that happened after the dividend declaredDate
+for data in JSONdata:
+    tempdf.loc[tempdf['date'] > data['declaredDate'], ['dividend']] = data['amount']
+    totalDividend += data['amount']
+
+# Setting NaN values in dividend to avarage of last four dividend amount
+tempdf.loc[pd.isnull(tempdf['dividend']), ['dividend']] = totalDividend / len(JSONdata)
 
 
 
+
+        print(symbolDF.head(2))
+        # Concatenating the symbolDF to the main dataframe df
+        if status:
+            df = pd.concat([df, symbolDF], ignore_index=True, sort=False)
 
 
 
@@ -112,7 +137,7 @@ totalEPS = 0 # to set the null EPS later
 for data in JSONdata['earnings']:
     tempdf.loc[tempdf['date'] > data['EPSReportDate'], ['eps']] = data['actualEPS']
     totalEPS += data['actualEPS']
-    
+
 # Setting NaN values in EPS to avarage of last four EPS
 tempdf.loc[pd.isnull(tempdf['eps']), ['eps']] = totalEPS / len(JSONdata['earnings'])
 
@@ -128,7 +153,7 @@ totalDividend = 0 # to set the null dividend later
 for data in JSONdata:
     tempdf.loc[tempdf['date'] > data['declaredDate'], ['dividend']] = data['amount']
     totalDividend += data['amount']
-    
+
 # Setting NaN values in dividend to avarage of last four dividend amount
 tempdf.loc[pd.isnull(tempdf['dividend']), ['dividend']] = totalDividend / len(JSONdata)
 
@@ -149,7 +174,7 @@ totalgrossProfit = 0 # to set the null grossProfit later
 for data in JSONdata['financials']:
     tempdf.loc[tempdf['date'] > data['reportDate'], ['grossProfit']] = data['grossProfit']
     totalgrossProfit += data['grossProfit']
-    
+
 # Setting NaN values in grossProfit to avarage of last four grossProfit
 tempdf.loc[pd.isnull(tempdf['grossProfit']), ['grossProfit']] = totalgrossProfit / len(JSONdata['financials'])
 
@@ -158,3 +183,4 @@ tempdf.loc[pd.isnull(tempdf['grossProfit']), ['grossProfit']] = totalgrossProfit
 ### Save all stocks data in a CSV file called 'StockData.csv'
 df.to_csv('StockData.csv')
 print('All data written to StockData.csv successfully )-:')
+'''
