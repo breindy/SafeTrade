@@ -48,5 +48,4 @@ router.get('/profile',
     res.json({ msg: "This is the profile page for: "+req.user.email });
 });
 
-
 module.exports = router;
