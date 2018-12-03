@@ -5,6 +5,8 @@ https://finance.yahoo.com/quote/%5EIXIC/history?ltr=1
 '''
 
 ### Import necessary python modules to equip ourselves with magnificant tools
+# To enforce float quotient
+from __future__ import division
 # Import pyhton http library
 import requests
 # To work with JSON objects returned from http calls
@@ -15,6 +17,7 @@ import pandas as pd
 import numpy as np
 # To avail sleep() functionality
 import time
+# To check the validity of fetched values
 import numbers
 
 # All API calls to IEX is prefixed with this base URL
@@ -162,6 +165,7 @@ for company in allCompanies:
         # Concatenating the symbolDF to the main dataframe df if there was enough features data
         if status:
             df = pd.concat([symbolDF, df], ignore_index=True, sort=False)
+            symbolDF.to_csv('SingleStockData.csv')
             print(len(symbolDF.index), 'rows have been added successfully for', symbol)
             print()
         else:
