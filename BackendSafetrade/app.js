@@ -54,7 +54,7 @@ app.use(passport.session());
 const controllers = require('./controllers');
 const dashboard = require('./controllers/dashboard');
 app.use('/api',controllers)
-app.use('/dashboard',dashboard)
+// app.use('/dashboard',dashboard)
 
 
 
