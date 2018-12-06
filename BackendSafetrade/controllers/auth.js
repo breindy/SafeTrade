@@ -88,6 +88,4 @@ router.get('/auth/profile',
     res.json({ msg: "This is the profile page for: " + req.user.email });
 });
 
-
-
 module.exports = router;

@@ -1,21 +1,7 @@
 const bcrypt = require('bcrypt-nodejs');
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('account', {
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
+  const Account = sequelize.define('account', {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -34,13 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true, // sequelize validation
       },
     },
-    password_hash: {
-      type: DataTypes.STRING,
+    balance: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
   });
 
   // this is a Sequelize lifecycle hook
-  User.beforeCreate((user) =>
+  Account.beforeCreate((account) =>
     new sequelize.Promise((resolve) => {
       bcrypt.hash(user.password_hash, null, null, (err, hashedPassword) => {
         resolve(hashedPassword);
@@ -50,5 +40,5 @@ module.exports = (sequelize, DataTypes) => {
     })
   );
 
-  return User;
+  return Account;
 }
