@@ -15,6 +15,7 @@ router.post('/signup', (req,res) => {
     lastName: req.body.lastName,
     username: req.body.username,
     email: req.body.email,
+    balance: req.body.balance,
     password_hash: req.body.password,
   }).then((user) => {
     res.json({ msg: "user created" });

@@ -34,6 +34,13 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true, // sequelize validation
       },
     },
+    balance: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     password_hash: {
       type: DataTypes.STRING,
     },

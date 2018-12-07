@@ -1,3 +1,5 @@
+// This route is ignored for now until the demo night
+// Instead, just a column name balance is added to users account
 const express = require('express');
 const models = require('../models');
 const passport = require('../middlewares/auth');

@@ -1,4 +1,5 @@
-// the request to this API is /stock?tickers=AAPL,GOOG,FB,...
+// Request to this API for single stock /stock?ticker=symbol
+// And for multiple stoks is /stock/multiple?tickers=AAPL,GOOG,FB,...etc.
 
 const express = require('express');
 const fetch = require('node-fetch');
@@ -20,21 +21,20 @@ router.get('/', (req, res) => {
     .then(text => res.json({ price: text }))
 });
 
-router.get('/multiple', (req, res) => {
+router.get('/multiple', async (req, res) => {
   prices = [];
   tickers = req.query.tickers.split(',');
 
-  url = iexUrl + tickers[0] + '/price';
-  fetch(url)
+  for(i=0; i<tickers.length; i++) {
+    url = iexUrl + tickers[i] + '/price';
+    await fetch(url)
     .then(response => response.text())
-    .then(text => prices.push(text))
-    .then(() => { for(i=1; i<tickers.length; i++) {
-        url = iexUrl + tickers[i] + '/price';
-        fetch(url)
-          .then(response => response.text())
-          .then(text => prices.push(text))
-    }})
-    .then(() => res.json({ prices : prices }))
+    .then(text => {
+      prices.push(text);
+    })
+  }
+
+  res.json({ prices : prices });
 });
 
 router.get('/error', (req, res) => {

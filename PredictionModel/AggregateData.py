@@ -166,6 +166,7 @@ for company in allCompanies:
         if status:
             df = pd.concat([symbolDF, df], ignore_index=True, sort=False)
             symbolDF.to_csv('SingleStockData.csv')
+            print(symbolDF.head(3))
             print(len(symbolDF.index), 'rows have been added successfully for', symbol)
             print()
         else:
