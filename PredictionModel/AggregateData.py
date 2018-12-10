@@ -24,7 +24,7 @@ import numbers
 iexUrl = 'https://api.iextrading.com/1.0'
 
 ### Declaring the main dataframe that we will be manipulating throughout the model building process
-df = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
+df = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'nasdaqIndex', 'numberOfShare', 'pe', 'price', 'profitPerShare', 'revenuePerShare'])
 
 #### Fetching all valid ticker symbols to populate the dataframe for each symbol with a year round transactions
 allCompanies = requests.get(iexUrl + '/ref-data/symbols').json()
@@ -37,7 +37,7 @@ for company in allCompanies:
     ## if the symbol is enabled for trading on IEX
     if company['isEnabled']:
         ## Declaring symbolDF to hold data for this symbol only
-        symbolDF = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'grossProfit', 'nasdaqIndex', 'marketcap', 'pe', 'price', 'revenuePerShare'])
+        symbolDF = pd.DataFrame(columns=['date', 'company', 'symbol', 'dividend', 'eps', 'nasdaqIndex', 'numberOfShare', 'pe', 'price', 'profitPerShare', 'revenuePerShare'])
 
         # To flag if the company has all the necessary features the model needs
         status = True
@@ -120,7 +120,7 @@ for company in allCompanies:
                 print('status set to false in dividend fetching step for', symbol)
 
 
-        ## Making API call to get last one year marketcap and revenuePerShare
+        ## Making API call to get last one year marketcap/price=numberOfShare and revenuePerShare
         if status:
             response = requests.get(iexUrl + '/stock/' + symbol + '/stats')
             JSONdata = response.json()
@@ -130,27 +130,27 @@ for company in allCompanies:
                 status = False
                 print('status set to false in marketcap and revenuePerShare fetching step for', symbol)
             else:
-                symbolDF['marketcap'] = JSONdata['marketcap']
+                symbolDF['numberOfShare'] = JSONdata['marketcap'] / symbolDF['price']
                 symbolDF['revenuePerShare'] = JSONdata['revenuePerShare']
 
 
-        ## Making API call to get last one year grossProfit
+        ## Making API call to get last one year grossProfit=profitPerShare
         if status:
             response = requests.get(iexUrl + '/stock/' + symbol + '/financials?period=annual')
             JSONdata = response.json()
 
             if 'financials' in JSONdata:
-                totalgrossProfit = 0 # to set the null grossProfit later
+                totalGrossProfit = 0 # to set the null grossProfit later
 
-                # Setting grossProfit values for transaction days that happened after the grossProfit report date
+                # Setting profitPerShare values for transaction days that happened after the grossProfit report date
                 for data in JSONdata['financials']:
                     if data['grossProfit'] is None:
                         data['grossProfit'] = 0
-                    symbolDF.loc[symbolDF['date'] > data['reportDate'], ['grossProfit']] = data['grossProfit']
-                    totalgrossProfit += data['grossProfit']
+                    symbolDF.loc[symbolDF['date'] > data['reportDate'], ['profitPerShare']] = data['grossProfit'] / symbolDF['numberOfShare']
+                    totalGrossProfit += data['grossProfit']
 
-                # Setting NaN values in grossProfit to avarage of last four grossProfit
-                symbolDF.loc[pd.isnull(symbolDF['grossProfit']), ['grossProfit']] = totalgrossProfit / len(JSONdata['financials'])
+                # Setting NaN values in profitPerShare to avarage of last four grossProfit
+                symbolDF.loc[pd.isnull(symbolDF['profitPerShare']), ['profitPerShare']] = totalGrossProfit / (len(JSONdata['financials']) * symbolDF['numberOfShare'])
             else:
                 status = False
                 print('status set to false in grossProfit fetching step for', symbol)
@@ -162,10 +162,9 @@ for company in allCompanies:
             for index, row in nasdaqIndicesDF.iterrows():
                 symbolDF.loc[symbolDF['date'] == row['Date'], ['nasdaqIndex']] = row['Close']
 
-        # Concatenating the symbolDF to the main dataframe df if there was enough features data
+        ## Concatenating the symbolDF to the main dataframe df if there was enough features data
         if status:
             df = pd.concat([symbolDF, df], ignore_index=True, sort=False)
-            symbolDF.to_csv('SingleStockData.csv')
             print(symbolDF.head(3))
             print(len(symbolDF.index), 'rows have been added successfully for', symbol)
             print()
