@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.search-container {
+  margin: auto;
+  padding-top: 50px;
+  width: 100px;
+  height: 100px;
+  margin: 50px auto 0;
+  text-align: center;
+}
+
+input[type='text'] {
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+  width: 200px; /*280px;*/
+  border: 1px solid #818181;
+  padding: 5px;
+}
+
+.select-box--box {
+  width: 180px;
+  position: absolute;
+  left: 0;
+}
+
+.select-box--container {
+  height: 30px;
+  border: 1px solid #aaa;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.select-box--selected-item {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  padding: 4px 12px;
+  vertical-align: middle;
+}
+
+.select-box--items div {
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  padding: 6px;
+  padding-left: 20px;
+}
+
+.select-box--arrow {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  background-color: #aaa;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.select-box--items div.selected {
+  background-image: url('/check.png');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 2px 6px;
+}
+
+.select-box--arrow-down {
+  position: absolute;
+  top: 12px;
+  left: 7px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid white;
+}
+
+.select-box--arrow-up {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid white;
+}

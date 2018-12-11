@@ -1,0 +1,31 @@
+{
+  "name": "backendsafetrade",
+  "version": "1.0.0",
+  "description": "SafeTrade backend server using Express/Sequelize.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon -L app.js",
+    "test": "jest"
+  },
+  "author": "Shofi",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^21.2.1"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "express": "^4.16.1",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "nodemon": "^1.18.6",
+    "node-fetch": "^2.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pg": "^7.3.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.41.0"
+  }
+}
