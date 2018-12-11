@@ -1,0 +1,18 @@
+.login-form {
+  margin: 0 auto;
+  max-width: 520px;
+  padding: 30px 40px;
+  border: 5px solid #15b2ff;
+}
+.btn {
+  background-image: none;
+  border: none;
+  border-radius: 7px;
+  background-color: #e17055;
+  border: 1px solid #e17055;
+  padding: 10px 30px;
+  color: white;
+  text-decoration: none;
+  border-radius: 7px;
+  margin-right: 15px;
+}

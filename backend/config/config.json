@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "db_safetrade",
+    "password": "",
+    "database": "safetrade_development",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  },
+  "test": {
+    "username": "shofi",
+    "password": "",
+    "database": "SafeTrade",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  },
+  "production": {
+    "username": "shofi",
+    "password": "",
+    "database": "SafeTrade",
+    "host": "127.0.0.1",
+    "dialect": "postgresql"
+  }
+}
