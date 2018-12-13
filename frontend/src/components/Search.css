@@ -91,3 +91,7 @@ input[type='text'] {
   border-right: 8px solid transparent;
   border-bottom: 10px solid white;
 }
+
+.search-row {
+  border: 5px solid #15b2ff;
+}

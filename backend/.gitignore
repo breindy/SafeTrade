@@ -5,6 +5,8 @@
 **.ipynb_checkpoints
 **node_modules
 
+**config/config.json
+
 **.com
 **.class
 **.dll
