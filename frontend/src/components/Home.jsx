@@ -30,15 +30,27 @@ class Home extends Component {
           <h3 className="text-center about-heading">About</h3>
           <Row className="show-grid text-center" id="about">
             <Col xs={12} sm={6} md={6} className="person-wrapper">
-              <Image src="assets/person-1.jpg" circle className="profile-pic" />
-              <h3>Shofiqur</h3>
-              <p>Hello World Hello World Hello World Hello World.</p>
+              {/* <Image src="assets/person-1.jpg" circle className="profile-pic" /> */}
+              <h3>Shofiqur Rahman</h3>
+              <p>
+                Shofiqur is currently a senior at The City College of New York
+                where he is passionate about Data Science and Full Stack
+                Software Development. He was in-charge of backend development
+                and predictive modelling of SafeTrade using Postgresql,
+                Sequelize, Express, Node, and Python.
+              </p>
             </Col>
 
             <Col xs={12} sm={6} md={6} className="person-wrapper">
-              <Image src="assets/person-2.jpg" circle className="profile-pic" />
-              <h3>Michelle</h3>
-              <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem.</p>
+              {/* <Image src="assets/person-2.jpg" circle className="profile-pic" /> */}
+              <h3>Michelle Uy</h3>
+              <p>
+                Michelle is currently a senior at The City College of New York
+                where she is passionate about User Experience, User Interface,
+                Graphic Design, and Full Stack Software Development. She was
+                in-charge of frontend development of SafeTrade using React,
+                React-Router, React-Boostrap and more.
+              </p>
             </Col>
           </Row>
         </Grid>
