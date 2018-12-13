@@ -1,5 +1,5 @@
 {
-  "name": "backendsafetrade",
+  "name": "backend",
   "version": "1.0.0",
   "description": "SafeTrade backend server using Express/Sequelize.",
   "main": "app.js",

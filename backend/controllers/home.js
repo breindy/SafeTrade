@@ -1,16 +1,12 @@
-const express = require('express');
 const models = require('../models');
-
+const express = require('express');
 const router = express.Router();
-
-
 
 router.get('/', (req, res) => {
   res.json({
     msg: "Successfully hit the root!"
   });
 });
-
 
 router.post('/', (req, res) => {
   res.json({
@@ -31,6 +27,5 @@ router.delete('/:id', (req, res) => {
     id: req.params.id
   });
 });
-
 
 module.exports = router;

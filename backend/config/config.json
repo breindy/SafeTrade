@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "db_safetrade",
+    "username": "shofi",
     "password": "",
-    "database": "safetrade_development",
+    "database": "SafeTrade",
     "host": "127.0.0.1",
     "dialect": "postgresql"
   },
