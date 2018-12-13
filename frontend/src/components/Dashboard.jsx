@@ -47,7 +47,7 @@ class Dashboard extends Component {
       return (
         <div>
           <h3 className="text-center">Dashboard</h3>
-          <p className="text-center">Failed!</p>
+          <p className="text-center">You must to login to see this page.</p>
         </div>
       )
     }
