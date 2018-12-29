@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, FormControl, Grid, Row, Col } from 'react-bootstrap'
 import './Search.css'
 
 class Search extends Component {
@@ -50,27 +50,62 @@ class Search extends Component {
   render() {
     return (
       <div>
-        <h3 className="text-center">Search</h3>
+        <Grid>
+          <Row className="show-grid">
+            <Col xs={12} md={8}>
+              <div className="search-row">
+                <div class="whole-login-container">
+                  <h3 class="text-center">Search</h3>
+                  <form onSubmit={this.onSubmit}>
+                    <h4>Enter Stock Symbol</h4>
+                    <FormControl
+                      id="formControlsText"
+                      type="text"
+                      placeholder="ex. AAPL, GOOGL, FB..."
+                      value={this.state.searchValue}
+                      name="searchValue"
+                      onChange={this.onChange}
+                    />
+                    <br />
+                    <div className="search-results">
+                      <h4 className="text-center" id="priceCompany">
+                        Price
+                      </h4>
+                      <p id="stockPrice" className="text-center" />
+                      <br />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </Col>
 
-        <div className="search-container">
-          <form onSubmit={this.onSubmit}>
-            <input
-              type="text"
-              placeholder="Enter Stock Symbol..."
-              value={this.state.searchValue}
-              name="searchValue"
-              onChange={this.onChange}
-            />
-          </form>
-        </div>
-
-        <div className="search-results">
-          <br />
-          <h3 className="text-center" id="priceCompany">
-            Price
-          </h3>
-          <p id="stockPrice" className="text-center" />
-        </div>
+            <Col xs={6} md={4}>
+              <div className="search-row">
+                <div class="whole-login-container">
+                  <h3 class="text-center">Wallet</h3>
+                  <div>
+                    <h6>My Stocks</h6>
+                    <p>AAPL: 1</p>
+                    <p>AAPL: 1</p>
+                    <p>AAPL: 1</p>
+                    <Row>
+                      <Col md={6} xs={6}>
+                        <Button type="submit" bsStyle="btn">
+                          Buy
+                        </Button>
+                      </Col>
+                      <Col md={6} xs={6}>
+                        <Button type="submit" bsStyle="btn">
+                          Sell
+                        </Button>
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Grid>
       </div>
     )
   }

@@ -83,10 +83,6 @@ class Login extends Component {
               onChange={this.onChange}
             />
             <br />
-
-            <Button type="submit" bsStyle="btn">
-              Login
-            </Button>
           </form>
         </div>
       </div>

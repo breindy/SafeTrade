@@ -21,6 +21,12 @@ router.get('/', (req, res) => {
     .then(text => res.json({ price: text }))
 });
 
+router.get('/info', (req, res) => {
+  url = iexUrl + req.query.ticker + '/quote';
+  fetch(url)
+    .then(response => console.log(response))
+});
+
 router.get('/multiple', async (req, res) => {
   prices = [];
   tickers = req.query.tickers.split(',');

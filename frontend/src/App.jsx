@@ -7,6 +7,7 @@ import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import Navbar from './components/CustomNavbar'
 import Search from './components/Search'
+import "circular-std";
 
 class App extends Component {
   render() {
